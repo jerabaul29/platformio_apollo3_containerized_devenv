@@ -51,3 +51,7 @@ When using vnc, be a bit secure; in the present image, we want to enforce:
 - only allow local connections - only let people connect if they already have access to the host computer.
 - start VNC server in "once" mode - tell VNC server to allow one connection, then block anything after that.
 - set a password - require user to send a password before they can connect. 
+
+## References and useful links
+
+- https://www.cloudsavvyit.com/10520/how-to-run-gui-applications-in-a-docker-container/

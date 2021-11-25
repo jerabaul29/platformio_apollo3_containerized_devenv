@@ -1,7 +1,18 @@
+# to use this container, we suggest:
+# todo: show typical docker command to run, with right port forwarding etc
+
+############################################################
+
+# the usual derive and metadata
+
 FROM ubuntu:20.04
 
 LABEL maintainer_name="Jean Rabault"
 LABEL maintainer_email="jean.rblt@gmail.com"
+
+############################################################
+
+# locals, tzdata etc
 
 # fix locals
 RUN apt-get update --fix-missing -y && \
@@ -15,7 +26,10 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Oslo
 RUN apt-get update && apt-get install -y tzdata
 
-# update and add some basic tooling
+############################################################
+
+# basic packages we need
+
 RUN apt-get update --fix-missing -y && \
     apt-get upgrade -y && \
     apt-get install apt-utils -y && \
@@ -24,7 +38,21 @@ RUN apt-get update --fix-missing -y && \
     apt-get install gpg -y && \
     apt-get autoremove -y
 
-# install vsc
+############################################################
+
+# install vnc server
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y x11vnc xvfb
+
+# what program vnc should start and make available; by default, code will open the content of the to_open folder
+RUN echo "exec code to_open" > ~/.xinitrc && chmod +x ~/.xinitrc
+
+############################################################
+
+# install vsc, the static libraries it needs, and the extensions
+
 # from https://code.visualstudio.com/docs/setup/linux#_installation
 RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg && \
     install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/ && \
@@ -34,7 +62,7 @@ RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
     apt update && \
     apt install code -y
 
-# vsc needs quite a few static libraries
+# vsc needs quite a few static libraries not included in 20.04 docker image
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y libxshmfence-dev && \
@@ -42,11 +70,13 @@ RUN apt-get update && \
 
 # install stuff that needs only user rights now
 # this was creating some issues, so comment for now, but try to re-set as user mode later on, so that the VSC extensions are not run as root...
+# todo: find a way to work as user regarding vsc extensions
 # RUN useradd -ms /bin/bash developer
 # USER developer
 
 # add needed vsc extensions
 # from my machine: code --list-extensions to show the extensions that I am using locally, copying the ones I need
+# todo: for now setting all of this as root; this is BAD; fix to install in userspace
 RUN mkdir pio_dir
 RUN code --user-data-dir pio_dir --install-extension CoenraadS.bracket-pair-colorizer-2 && \
     code --user-data-dir pio_dir --install-extension ionutvmi.path-autocomplete && \
@@ -61,11 +91,31 @@ RUN code --user-data-dir pio_dir --install-extension CoenraadS.bracket-pair-colo
     code --user-data-dir pio_dir --install-extension yzhang.markdown-all-in-one && \
     code --user-data-dir pio_dir --install-extension streetsidesoftware.code-spell-checker
 
+############################################################
+
 # install all the necessary apollo3 sparkfun core v1.xx code
+
 # todo
 
+# install all the libraries needed to build to waves in ice instrument
+
+# todo
+
+############################################################
+
+# how and where to start stuff
+
 ADD ./to_open /to_open
+
+# todo: use ENTRYPOINT or CMD or both together? ... not clear, see:
+# https://phoenixnap.com/kb/docker-cmd-vs-entrypoint
+# https://phoenixnap.com/kb/how-to-containerize-applications
+# https://www.bmc.com/blogs/docker-cmd-vs-entrypoint/
+# todo: for now use CMD, investigate in more details some day...
 
 # script to allow launching vsc automatically at container startup
 # COPY docker_entrypoint.sh /usr/local/bin/
 # ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]
+
+# what to launch at startup
+CMD ["v11vnc", "-create", "-forever"]
