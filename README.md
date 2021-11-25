@@ -15,26 +15,21 @@ docker build -t vsc_platformio_apollo3 .
 
 # Use
 
-# Notes:
+# Development notes
 
-- code-server: would be the simplest, but the question is the extensions: all from market, or vsopen only? If so risk that no platformio... Seems like the extensions come from vsopen only... In this case, it is not really an option.
-- vsc in browser with vnc server: may be an option?
+Here we write about the philosophy behind this container, why we build it, which technical solutions would be possible, which we choose, and what we should remember to set up with the solution we choose.
 
-When using vnc:
+## What we want to do
 
-Only allow local connections - only let people connect if they already have access to your computer.
+We want to provide a portable, reproducible, easy-to-use, battery included development environment for programming the Sparkfun Apollo Ambiq3BLU bare metal core boards. To provide good tooling, we want the development environment to be based on Visual Studio Code (vsc) + Platformio + Apollo3 Platformio core + a number of help extensions + all the libraries necessary for the waves in ice drifter included by default. It should be possible to use this solution on any OS, without additional setup needed to get full language, autocomplete, linter, compiling etc support.
 
-Start your VNC server in "once" mode - tell your VNC server to allow one connection, then block anything after that.
+## How we can do it
 
-Set a password - require people to send a password before they can connect. 
+There are a few solutions to get what we want:
+
+- code-server: would be the simplest to use, but the issue is the extensions: they are taken only from the open-vsx market; this means i) not certified (not clear for me if this has some effects on how safe), ii) some extensions are not available, for example platformio and ms-cpp are actually not available (I think; extensions available there under the same name are likely some 'home made' builds with some modifications, or some non really related stuff, or else). However, this is really easy to set up; for example, this is enough to fire code-server in a docker container that we can connect to in browser:
+
 ```
-
-```
-
-# method with code-server
-
-try using something that follows:
-
 jr@T490:~/Desktop/Current$ mkdir -p ~/.config
 docker run -it --name code-server -p 127.0.0.1:8080:8080 \
   -v "$HOME/.config:/home/coder/.config" \
@@ -42,3 +37,18 @@ docker run -it --name code-server -p 127.0.0.1:8080:8080 \
   -u "$(id -u):$(id -g)" \
   -e "DOCKER_USER=$USER" \
   codercom/code-server:latest
+```
+
+Unfortunately, since the core extensions needed are not available in "genuine" version, we cannot use this solution.
+
+- vsc with X-display export: it is easy to set up a docker that has access to the host's X socket. However, 1) this will work on linux, not windows / mac, and only on X-based linux distros, ii) this will likely be a security risk. Therefore, this direction is not investigated further, though it should be quick and easy to set up.
+
+- vsc in browser with vnc server: set up a vnc server in addition to code, and use it to provide code over a socket to be opened by any web browser. This is both safer and more portable - should work on any OS and system. This is the direction we want to investigate and implement.
+
+## Some practicalities and things to keep in mind when setting a vnc server
+
+When using vnc, be a bit secure; in the present image, we want to enforce:
+
+- only allow local connections - only let people connect if they already have access to the host computer.
+- start VNC server in "once" mode - tell VNC server to allow one connection, then block anything after that.
+- set a password - require user to send a password before they can connect. 
