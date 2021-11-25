@@ -41,30 +41,31 @@ RUN apt-get update && \
     apt-get install -y libasound2
 
 # install stuff that needs only user rights now
-RUN useradd -ms /bin/bash developer
-USER developer
+# this was creating some issues, so comment for now, but try to re-set as user mode later on, so that the VSC extensions are not run as root...
+# RUN useradd -ms /bin/bash developer
+# USER developer
 
 # add needed vsc extensions
 # from my machine: code --list-extensions to show the extensions that I am using locally, copying the ones I need
-RUN code --install-extension CoenraadS.bracket-pair-colorizer-2 && \
-    code --install-extension ionutvmi.path-autocomplete && \
-    code --install-extension jeff-hykin.better-cpp-syntax && \
-    code --install-extension kevinglasson.cornflakes-linter && \
-    code --install-extension ms-vscode.cmake-tools && \
-    code --install-extension ms-vscode.cpptools && \
-    code --install-extension ms-vscode.cpptools-extension-pack && \
-    code --install-extension ms-vscode.cpptools-themes && \
-    code --install-extension platformio.platformio-ide && \
-    code --install-extension vscodevim.vim && \
-    code --install-extension yzhang.markdown-all-in-one && \
-    code --install-extension streetsidesoftware.code-spell-checker
+RUN mkdir pio_dir
+RUN code --user-data-dir pio_dir --install-extension CoenraadS.bracket-pair-colorizer-2 && \
+    code --user-data-dir pio_dir --install-extension ionutvmi.path-autocomplete && \
+    code --user-data-dir pio_dir --install-extension jeff-hykin.better-cpp-syntax && \
+    code --user-data-dir pio_dir --install-extension kevinglasson.cornflakes-linter && \
+    code --user-data-dir pio_dir --install-extension ms-vscode.cmake-tools && \
+    code --user-data-dir pio_dir --install-extension ms-vscode.cpptools && \
+    code --user-data-dir pio_dir --install-extension ms-vscode.cpptools-extension-pack && \
+    code --user-data-dir pio_dir --install-extension ms-vscode.cpptools-themes && \
+    code --user-data-dir pio_dir --install-extension platformio.platformio-ide && \
+    code --user-data-dir pio_dir --install-extension vscodevim.vim && \
+    code --user-data-dir pio_dir --install-extension yzhang.markdown-all-in-one && \
+    code --user-data-dir pio_dir --install-extension streetsidesoftware.code-spell-checker
 
 # install all the necessary apollo3 sparkfun core v1.xx code
 # todo
 
-# script to allow launching vsc automatically at container startup
-COPY docker_entrypoint.sh /usr/local/bin/
-
 ADD ./to_open /to_open
 
-ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]
+# script to allow launching vsc automatically at container startup
+# COPY docker_entrypoint.sh /usr/local/bin/
+# ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]

@@ -27,3 +27,18 @@ Only allow local connections - only let people connect if they already have acce
 Start your VNC server in "once" mode - tell your VNC server to allow one connection, then block anything after that.
 
 Set a password - require people to send a password before they can connect. 
+```
+
+```
+
+# method with code-server
+
+try using something that follows:
+
+jr@T490:~/Desktop/Current$ mkdir -p ~/.config
+docker run -it --name code-server -p 127.0.0.1:8080:8080 \
+  -v "$HOME/.config:/home/coder/.config" \
+  -v "$PWD:/home/coder/project" \
+  -u "$(id -u):$(id -g)" \
+  -e "DOCKER_USER=$USER" \
+  codercom/code-server:latest
