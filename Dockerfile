@@ -41,6 +41,7 @@ RUN apt-get update --fix-missing -y && \
 ############################################################
 
 # install vnc server
+# todo: the example I saw used x11vnc; but maybe / is another solution better fitted? What about https://wiki.archlinux.org/title/TigerVNC or similar?
 
 RUN apt-get update && \
     apt-get upgrade -y && \

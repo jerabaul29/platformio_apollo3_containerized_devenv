@@ -55,3 +55,4 @@ When using vnc, be a bit secure; in the present image, we want to enforce:
 ## References and useful links
 
 - https://www.cloudsavvyit.com/10520/how-to-run-gui-applications-in-a-docker-container/
+- https://www.digitalocean.com/community/tutorials/how-to-remotely-access-gui-applications-using-docker-and-caddy-on-debian-9
