@@ -47,7 +47,7 @@ Unfortunately, since the core extensions needed are not available in "genuine" v
 
 - vsc in browser with vnc server: set up a vnc server in addition to code, and use it to provide code over a socket to be opened by any web browser. This is both safer and more portable - should work on any OS and system. This is the direction we want to investigate and implement.
 
-## Some practicalities and things to keep in mind when setting a vnc server
+## Using a vnc-based solution: some practicalities and things to keep in mind when setting a vnc server
 
 When using vnc, be a bit secure; in the present image, we want to enforce:
 
