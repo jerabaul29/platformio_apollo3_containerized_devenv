@@ -1,11 +1,6 @@
 # platformio_apollo3_containerized_devenv
 
-A containerized development environment for Platformio + Apollo3.
-
-Inspired from, among others:
-
-- https://binal.pub/2019/04/running-vscode-in-docker/
-- https://github.com/caesarnine/data-science-docker-vscode-template
+A containerized development environment for VSC + Platformio + SF Apollo3 + Extensions + libraries for our waves in ice instrument, with batteries included, and portable across OSes. 
 
 # Build
 
@@ -14,6 +9,8 @@ docker build -t vsc_platformio_apollo3 .
 ```
 
 # Use
+
+TODO: how to launch
 
 # Development notes
 
@@ -43,7 +40,7 @@ docker run -it --name code-server -p 127.0.0.1:8080:8080 \
 
 Unfortunately, since the core extensions needed are not available in "genuine" version, we cannot use this solution.
 
-- vsc with X-display export: it is easy to set up a docker that has access to the host's X socket. However, 1) this will work on linux, not windows / mac, and only on X-based linux distros, ii) this will likely be a security risk. Therefore, this direction is not investigated further, though it should be quick and easy to set up.
+- vsc with X-display export: it is easy to set up a docker that has access to the host's X socket. However, i) this will work on linux, not windows / mac, and only on X-based linux distros, ii) this will likely be a security risk. Therefore, this direction is not investigated further, though it should be quick and easy to set up.
 
 - vsc in browser with vnc server: set up a vnc server in addition to code, and use it to provide code over a socket to be opened by any web browser. This is both safer and more portable - should work on any OS and system. This is the direction we want to investigate and implement.
 
