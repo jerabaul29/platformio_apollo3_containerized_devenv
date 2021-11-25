@@ -21,11 +21,13 @@ Here we write about the philosophy behind this container, why we build it, which
 
 ## What we want to do
 
-We want to provide a portable, reproducible, easy-to-use, battery included development environment for programming the Sparkfun Apollo Ambiq3BLU bare metal core boards. To provide good tooling, we want the development environment to be based on Visual Studio Code (vsc) + Platformio + Apollo3 Platformio core + a number of help extensions + all the libraries necessary for the waves in ice drifter included by default. It should be possible to use this solution on any OS, without additional setup needed to get full language, autocomplete, linter, compiling etc support.
+We want to provide a portable, reproducible, easy-to-use, battery included development environment for programming the Sparkfun Apollo Ambiq3BLU bare metal core boards. To make this work across OSes, be reproducible and upgradable, etc, we think the best is to use some form of container, built from a standard dockerfile. To provide good tooling, we want the development environment to be based on Visual Studio Code (vsc) + Platformio + Apollo3 Platformio core + a number of help extensions + all the libraries necessary for the waves in ice drifter included by default. It should be possible to use this solution on any OS, without additional setup needed to get full language, autocomplete, linter, compiling etc support.
+
+So, we want to write a dockerfile that allows to run vsc from within the container, with all the necessary extensions and tooling and libraries, and control it from the host machine through a portable solution such as a web browser.
 
 ## How we can do it
 
-There are a few solutions to get what we want:
+After doing a bit of research, there are a few candidate solutions to get what we want:
 
 - code-server: would be the simplest to use, but the issue is the extensions: they are taken only from the open-vsx market; this means i) not certified (not clear for me if this has some effects on how safe), ii) some extensions are not available, for example platformio and ms-cpp are actually not available (I think; extensions available there under the same name are likely some 'home made' builds with some modifications, or some non really related stuff, or else). However, this is really easy to set up; for example, this is enough to fire code-server in a docker container that we can connect to in browser:
 
